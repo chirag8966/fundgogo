@@ -35,11 +35,11 @@ class Login extends CI_Controller
         
         if(!isset($isLoggedIn) || $isLoggedIn != TRUE)
         {
-            $this->load->view('login');
+            $this->load->view('back/login');
         }
         else
         {
-            redirect('/dashboard');
+            redirect('/user/dashboard');
         }
     }
     
@@ -85,7 +85,7 @@ class Login extends CI_Controller
 
                 $this->login_model->lastLogin($loginInfo);
                 
-                redirect('/dashboard');
+                redirect('/user/dashboard');
             }
             else
             {
@@ -109,7 +109,7 @@ class Login extends CI_Controller
         }
         else
         {
-            redirect('/dashboard');
+            redirect('/user/dashboard');
         }
     }
     

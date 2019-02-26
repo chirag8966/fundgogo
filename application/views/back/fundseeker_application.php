@@ -39,8 +39,8 @@
                         <td><?php echo $this->db->where('fundseeker_id',$record->fundseeker_id)->get("fundseeker")->row()->fundseeker_name; ?></td>
                         <td><a href="<?=$record->website;?>" target="_blank"><?=$record->company;?></a></td>
 						
-						<td><?php echo $this->db->where('category_id',$record->category_id)->get("category")->row()->category_name; ?></td>
-                        <td><?php echo $this->db->where('turnover_id',$record->turnover_id)->get("turnover")->row()->turnover_name; ?></td>
+						<td><?php echo $record->category;?></td>
+                        <td><?php echo $record->turnover_id; ?></td>
 						<td><?php echo date('d-m-Y',strtotime($record->date_of_apply)); ?></td>
 						<td><input onchange="changeStatus(this,'fundseeker_application','<?=$record->fundseeker_application_id; ?>')" type="checkbox" class="switch" name="status" value="1" <?php echo($record->status)?'checked':'';?> ></td>
                         
