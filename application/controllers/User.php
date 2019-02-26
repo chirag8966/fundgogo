@@ -24,16 +24,24 @@ class User extends BaseController
     /**
      * This function used to load the first screen of the user
      */
-    public function index()
-    {
-        $this->global['pageTitle'] = 'CodeInsect : Dashboard';
-        
-        $this->loadViews("dashboard", $this->global, NULL , NULL);
-    }
-    
+   
     /**
      * This function is used to load the user list
      */
+	 
+	 public function dashboard(){
+		 	 if($this->isAdmin() == TRUE)
+        {
+            $this->loadThis();
+        }else
+		{
+				$page_data['pageTitle'] = 'Fundgogo: Admin';
+            $page_data['page_name'] = 'dashboard';
+			
+			$this->load->view('back/index', $page_data);
+		}
+	 }
+	 
     function userListing()
     {
         if($this->isAdmin() == TRUE)
@@ -55,7 +63,10 @@ class User extends BaseController
             
             $this->global['pageTitle'] = 'CodeInsect : User Listing';
             
-            $this->loadViews("users", $this->global, $data, NULL);
+           $data['pageTitle'] = 'Fundgogo: Admin';
+            $data['page_name'] = 'users';
+			
+			$this->load->view('back/index', $data);
         }
     }
 	
