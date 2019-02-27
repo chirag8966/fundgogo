@@ -9,7 +9,7 @@ require APPPATH . '/libraries/BaseController.php';
  * @version : 1.1
  * @since : 15 November 2016
  */
-class Fundseeker extends BaseController
+class Investors extends BaseController
 {
 	  public function __construct()
     {
@@ -23,33 +23,64 @@ class Fundseeker extends BaseController
 	 public function index()
     {
 			$page_data['pageTitle'] = 'Fundgogo: Dashboard';
-            $page_data['page_name'] = 'fundseeker_dashboard';
-			$page_data['model']='fundseeker_home';
+            $page_data['page_name'] = 'investor_dashboard';
+			$page_data['model']='investor_home';
 			$this->load->view('front/index', $page_data);
     }
 	
 	
+	public function review($id="")
+    {
+			$page_data['pageTitle'] = 'Fundgogo: Application Review';
+            $page_data['page_name'] = 'investor_dashboard';
+			$page_data['model']='investor_review';
+			
+			$this->db->where("investors_id",$_SESSION['user']['investors_id']);
+			$this->db->where("fundseeker_application_id",$id);
+			$qry = $this->db->get("application_status")->num_rows();
+			
+			if($qry<=0){
+			$data2['investors_id'] = $_SESSION['user']['investors_id'];
+			$data2['fundseeker_application_id'] = $id;
+			$data2['status'] = "1";
+			
+			$this->db->insert("application_status",$data2);
+			}
+			$page_data['fundseekerRecord'] = $this->db->where("fundseeker_application_id",$id)->get("fundseeker_application")->result();
+			$page_data['application_id'] = $id;
+			$this->load->view('front/index', $page_data);
+    }
 	
+	public function approve($id="")
+    {
+						
+			$data2['status'] = "2";
+			$this->db->where("investors_id",$_SESSION['user']['investors_id']);
+			$this->db->where("fundseeker_application_id",$id);
+			$this->db->update("application_status",$data2);
+			
+			redirect("investors/application/");
+    }
 	
 	
 	public function application($para1='')
 	{
 		$page_data['pageTitle'] = 'Fundgogo: Dashboard';
-        $page_data['page_name'] = 'fundseeker_dashboard';
+        $page_data['page_name'] = 'investor_dashboard';
 		
 		if($para1=='')
-		$page_data['model'] = 'fundseeker_application';
+		$page_data['model'] = 'investor_application';
 		else
 		{
 			switch ($para1)
 			{
-				case 'add' : $page_data['model'] = 'fundseeker_application_add';
+				case 'add' : $page_data['model'] = 'investor_application_add';
 							 break;
 				case 'submit_app': 
 
 								if($_SERVER['REQUEST_METHOD']==='POST')
 								{
-									$data['fundseeker_id']=$_SESSION['user']['fundseeker_id'];
+									$data['investor_id']=$_SESSION['user']['investor_id'];
 									$data['description']=$this->input->post("description");
 									$data['company']=$this->input->post("company");
 									$data['website']=$this->input->post("website");
@@ -79,52 +110,51 @@ class Fundseeker extends BaseController
 									
 									if ($this->upload->do_upload('aadhar_front')) {
 									 $upload_data=$this->upload->data();
-									 $data['adhaar_front']='uploads/application/'.$upload_data['file_name'];
+									 $data['adhaar_front']='uploads/application'.$upload_data['file_name'];
 									 
 									}
 									
 									if ($this->upload->do_upload('aadhar_back')) {
 									 $upload_data=$this->upload->data();
-									  $data['adhaar_back']='uploads/application/'.$upload_data['file_name'];
+									  $data['adhaar_back']='uploads/application'.$upload_data['file_name'];
 									}
 									
 									if ($this->upload->do_upload('pan_front')) {
 									 $upload_data=$this->upload->data();
-									  $data['pan_front']='uploads/application/'.$upload_data['file_name'];
+									  $data['pan_front']='uploads/application'.$upload_data['file_name'];
 									}
 									
 									if ($this->upload->do_upload('pan_back')) {
 									 $upload_data=$this->upload->data();
-									  $data['pan_back']='uploads/application/'.$upload_data['file_name'];
+									  $data['pan_back']='uploads/application'.$upload_data['file_name'];
 									}
 									
 									if ($this->upload->do_upload('annual_report')) {
 									 $upload_data=$this->upload->data();
-									  $data['annual_report']='uploads/application/'.$upload_data['file_name'];
+									  $data['annual_report']='uploads/application'.$upload_data['file_name'];
 									}
 									
 									
-									$res=$this->db->insert("fundseeker_application",$data);
+									$res=$this->db->insert("investor_application",$data);
 									
 									if($res)
 									{
 										$page_data['message']="Application Submitted Successfully";
-										$page_data['model'] = 'fundseeker_application';
+										$page_data['model'] = 'investor_application';
 									}
 									else
 									{
 										$page_data['message']="Something went wrong!";
-										$page_data['model'] = 'fundseeker_application';
+										$page_data['model'] = 'investor_application';
 									}
 									
 									return;
 								}
-				default : 	$page_data['model'] = 'fundseeker_application';	 
+				default : 	$page_data['model'] = 'investor_application';	 
 			}
 		}
-		$this->db->where("fundseeker_id",$_SESSION['user']['fundseeker_id']);
-		$result=$this->db->get("fundseeker_application")->result();
-	    $page_data['fundseekerRecords']= $result;
+		$page_data['investorRecords'] = $this->db->query('select * from fundseeker_application')->result();
+		
 		$this->load->view('front/index', $page_data);
 	}
 	
