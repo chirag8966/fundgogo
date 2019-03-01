@@ -19,6 +19,11 @@ class Home extends BaseController
 			$this->load->view('front/index', $page_data);
     }
 	
+	public function logout(){
+		unset($_SESSION);
+		session_destroy();
+		redirect("home");
+	}
 	
 	public function login(){
 		

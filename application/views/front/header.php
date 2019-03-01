@@ -88,10 +88,16 @@
                   Contact
                 </a>
               </li>
+			  <?php
+			  if(empty($_SESSION['user'])){
+			  ?>
               <li class="nav-item">
 					<a href="<?=base_url()?>/home/login" class="btn btn-common" >Sign In </a>
 					<a href="<?=base_url()?>/home/register" class="btn btn-common" > Sign Up</a>
 			  </li>
+			  <?php
+			  }
+			  ?>
             </ul>
           </div>
         </div>
